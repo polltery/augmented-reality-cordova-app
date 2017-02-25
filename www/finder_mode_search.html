@@ -1,0 +1,145 @@
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0"/>
+        <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="cordova.js"></script>      
+        <link href="css/normalize.css" rel="stylesheet" type="text/css"/>
+        <link href="css/ionic.css" rel="stylesheet" type="text/css"/>
+        <link href="css/style.css" rel="stylesheet" type="text/css"/>
+
+        <script>
+            var popUpActive = false;
+            function closeClicked () {
+                $("#popUpDiv").fadeOut("fast", function () {
+                    popUpActive = false;
+                });
+                toggleTabItem("#loadingGif", "show");
+                CraftARSDK.startFinder();
+            };
+
+            function onError(error) {
+            }
+
+            function getResults(results) {
+                if (results.length > 0) {
+                    toggleTabItem("#loadingGif", "hide");
+                    CraftARSDK.stopFinder();
+                    var item = results[0].item;
+                    itemHTML = item;
+                    $("#nameResponse").html(item.name);
+                    $("#image_src").attr("src", results[0].matchedImage.thumbnail320Url);
+                    $("#idResponse").html(item.uuid);
+                    $('#popUpDiv').fadeIn("fast", function () {
+                        popUpActive = true;
+                    });
+                }
+            }
+
+            function didStartCapture() {
+                CraftARCloudRecognition.setCollectionWithToken("08c9ac829f644bcc", function () {
+                    CraftARSDK.searchController = CraftARCloudRecognition.searchController;
+
+                    CraftARCloudRecognition.onSearchResults(getResults);
+                    CraftARCloudRecognition.onSearchError(onError);
+                    CraftARCloudRecognition.setSearchPeriod(5000);
+
+                    CraftARSDK.startFinder();
+                }, function (error) {
+                    alert("Error:" + error.errorMessage);
+                });
+            }
+
+
+            function startCraftAR()
+            {
+                CraftARSDK.onStartCapture(didStartCapture);
+                CraftARSDK.startCapture();
+            }
+
+            document.addEventListener("deviceready", function () {
+                startCraftAR();
+            }, false);
+
+            function toggleTabItem(name, action) {
+                if (action === "hide") {
+                    $(name).css("visibility", "hidden");
+                    $(name).removeClass("tab-item");
+                    $(name).css("width", "0px");
+                } else {
+                    $(name).css("visibility", "visible");
+                    $(name).addClass("tab-item");
+                    $(name).css("width", "auto");
+                }
+            }
+
+            // Form methods
+            $(document).on("click", "#switchBtn", function(e){
+
+                e.preventDefault();
+
+                var data = {key : 'test' };
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'http://192.168.1.4:3000/switch',
+                    data: JSON.stringify(data),
+                    contentType : "application/json",
+                    success : function(data){
+                        //
+                    },
+                    error: function (jqXHR, exception) {
+                        var msg = '';
+                        if (jqXHR.status === 0) {
+                            msg = 'Not connect.\n Verify Network.';
+                        } else if (jqXHR.status == 404) {
+                            msg = 'Requested page not found. [404]';
+                        } else if (jqXHR.status == 500) {
+                            msg = 'Internal Server Error [500].';
+                        } else if (exception === 'parsererror') {
+                            msg = 'Requested JSON parse failed.';
+                        } else if (exception === 'timeout') {
+                            msg = 'Time out error.';
+                        } else if (exception === 'abort') {
+                            msg = 'Ajax request aborted.';
+                        } else {
+                            msg = 'Uncaught Error.\n' + jqXHR.responseText;
+                        }
+                        alert(msg);
+                    }
+                });
+            });
+
+        </script>
+
+    </head>
+    <body >
+        <div class="bar bar-header bar-light">
+            <h5 class="title" id="headerTitle">Cloud Recognition Example</h5>
+        </div>
+
+        <div class="tabs tabs-icon-only" >
+            <div id="loadingGif">
+                <img src="img/spinner.gif" style="height:80%;"/>
+            </div>
+        </div>
+
+        <div id="popUpDiv" style="color:white" >
+            <div id="popUpMainDiv">
+                <img src="img/closeButton.png" id="closeButton" onclick="closeClicked();" alt="" style="max-width: 80%; max-height: 80%"/>
+                <!--<div id="responseDiv">
+                    <div id="imageResponse">
+                        <img src="#" id="image_src" alt=""/>
+                    </div>
+                    <div id="textResponse">
+                        <h1 id="nameResponse"></h1>
+                        <h3 id="idResponse"></h3>
+                    </div>-->
+                    <br><br><br><br><br>
+                    <h2 class="text-center">Switch options</h2>
+                    <button class="button button-block button-positive" id="switchBtn">TURN ON/OFF</button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
