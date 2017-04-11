@@ -13,6 +13,7 @@
     <script>
         var popUpActive = false;
         var apiUrl = localStorage.getItem('apiUrl');
+        var craftARcollectionToken = localStorage.getItem('craftARCollectionToken');
         function closeClicked() {
             $("#popUpDiv").fadeOut("fast", function () {
                 popUpActive = false;
@@ -40,7 +41,7 @@
         }
 
         function didStartCapture() {
-            CraftARCloudRecognition.setCollectionWithToken("08c9ac829f644bcc", function () {
+            CraftARCloudRecognition.setCollectionWithToken(craftARcollectionToken, function () {
                 CraftARSDK.searchController = CraftARCloudRecognition.searchController;
 
                 CraftARCloudRecognition.onSearchResults(getResults);

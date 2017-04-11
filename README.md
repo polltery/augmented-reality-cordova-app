@@ -7,10 +7,14 @@ Prequsities
 - **cordova** : Install using npm `npm install cordova -g`
 - Android SDK (for Android)
 - Xcode (for iOS)
+- AR Server (for AR interaction)
+- CraftAR Collection Token
 
 Getting Started
 ---
-Make sure to update `env.js` to set the correct URL for the API.
+
+**Before you compile the application:**
+Make sure to update `env.js` with the correct `apiUrl` and `craftARCollectionToken`
 
 For **Android** Build:
 
@@ -24,3 +28,5 @@ For **iOS** build:
 ```
 cordova build ios
 ```
+
+*Created by Balraj Singh Bains for 4th Year Honours Dissertation at Heriot Watt University.*

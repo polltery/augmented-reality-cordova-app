@@ -26,6 +26,7 @@
 
   <script>
     localStorage.setItem('apiUrl',window.ENV.apiUrl);
+    localStorage.setItem('craftARCollectionToken',window.ENV.craftARCollectionToken);
     function launchSingleShotSearch() {
       CraftARSDK.startView(null, null, { "loadUrl": "single_shot_search.html" });
     };
