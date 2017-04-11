@@ -1,162 +1,125 @@
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0"/>
-        <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-        <script src="cordova.js"></script>      
-        <link href="css/normalize.css" rel="stylesheet" type="text/css"/>
-        <link href="css/ionic.css" rel="stylesheet" type="text/css"/>
-        <link href="css/style.css" rel="stylesheet" type="text/css"/>
 
-        <script>
-            var popUpActive = true;
-            $(document).click(function (e) {
-                if (e.target.id !== '#popUpDiv' && !$('#popUpDiv').find(e.target).length && popUpActive === true) {
-                    $("#popUpDiv").fadeOut("fast", function () {
-                        popUpActive = false;
-                    });
-                }
-            });
-
-            function singleShotSearch() {
-                CraftARSDK.singleShotSearch();
-                toggleTabItem("#loadingGif", "show");
-                toggleTabItem("#shutterButton", "hide");
-            }
-
-            function onError(error) {
-                // Error searching, restart the capture
-                toggleTabItem("#loadingGif", "hide");
-                toggleTabItem("#shutterButton", "show");
-                CraftARSDK.getCamera.restartCapture();
-            }
-
-            function getResults(results) {
-                toggleTabItem("#loadingGif", "hide");
-                toggleTabItem("#shutterButton", "show");
-                if (results.length > 0) {
-                    var item = results[0].item;
-                    itemHTML = item;
-                    $("#nameResponse").html(item.name);
-                    $("#image_src").attr("src", results[0].matchedImage.thumbnail320Url);
-                    $("#idResponse").html(item.uuid);
-                    $('#popUpDiv').fadeIn("fast", function () {
-                        popUpActive = true;
-                    });
-                } else {
-                    alert("Nothing found!");
-                }
-                CraftARSDK.getCamera.restartCapture();
-            }
-
-            function didStartCapture() {
-                CraftARCloudRecognition.setCollectionWithToken("08c9ac829f644bcc", function () {
-                    CraftARSDK.searchController = CraftARCloudRecognition.searchController;
-
-                    CraftARCloudRecognition.onSearchResults(getResults);
-                    CraftARCloudRecognition.onSearchError(onError);
-                    toggleTabItem("#shutterButton", "show");
-
-                }, function (error) {
-                    alert("Error:" + error.errorMessage);
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0"
+    />
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="cordova.js"></script>
+    <link href="css/normalize.css" rel="stylesheet" type="text/css" />
+    <link href="css/ionic.css" rel="stylesheet" type="text/css" />
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <script src="js/interactions.js"></script>
+    <script>
+        var popUpActive = true;
+        var apiUrl = localStorage.getItem('apiUrl');
+        $(document).click(function (e) {
+            if (e.target.id !== '#popUpDiv' && !$('#popUpDiv').find(e.target).length && popUpActive === true) {
+                $("#popUpDiv").fadeOut("fast", function () {
+                    popUpActive = false;
                 });
             }
+        });
 
+        function singleShotSearch() {
+            CraftARSDK.singleShotSearch();
+            toggleTabItem("#loadingGif", "show");
+            toggleTabItem("#shutterButton", "hide");
+        }
 
-            function startCraftAR()
-            {
-                CraftARSDK.onStartCapture(didStartCapture);
-                CraftARSDK.startCapture();
-            }
+        function onError(error) {
+            // Error searching, restart the capture
+            toggleTabItem("#loadingGif", "hide");
+            toggleTabItem("#shutterButton", "show");
+            CraftARSDK.getCamera.restartCapture();
+        }
 
-            document.addEventListener("deviceready", function () {
-                startCraftAR();
-            }, false);
-
-            function toggleTabItem(name, action) {
-                if (action === "hide") {
-                    $(name).css("visibility", "hidden");
-                    $(name).removeClass("tab-item");
-                    $(name).css("width", "0px");
-                } else {
-                    $(name).css("visibility", "visible");
-                    $(name).addClass("tab-item");
-                    $(name).css("width", "auto");
-                }
-            }
-
-            // Form methods
-            $(document).on("click", "#switchBtn", function(e){
-
-                e.preventDefault();
-
-                var data = {key : 'test' };
-
-                $.ajax({
-                    type: 'POST',
-                    url: 'http://192.168.1.4:3000/switch',
-                    data: JSON.stringify(data),
-                    contentType : "application/json",
-                    success : function(data){
-                        //
-                    },
-                    error: function (jqXHR, exception) {
-                        var msg = '';
-                        if (jqXHR.status === 0) {
-                            msg = 'Not connect.\n Verify Network.';
-                        } else if (jqXHR.status == 404) {
-                            msg = 'Requested page not found. [404]';
-                        } else if (jqXHR.status == 500) {
-                            msg = 'Internal Server Error [500].';
-                        } else if (exception === 'parsererror') {
-                            msg = 'Requested JSON parse failed.';
-                        } else if (exception === 'timeout') {
-                            msg = 'Time out error.';
-                        } else if (exception === 'abort') {
-                            msg = 'Ajax request aborted.';
-                        } else {
-                            msg = 'Uncaught Error.\n' + jqXHR.responseText;
-                        }
-                        alert(msg);
-                    }
+        function getResults(results) {
+            toggleTabItem("#loadingGif", "hide");
+            toggleTabItem("#shutterButton", "show");
+            if (results.length > 0) {
+                var item = results[0].item;
+                itemHTML = item;
+                $("#nameResponse").html(item.name);
+                $("#image_src").attr("src", results[0].matchedImage.thumbnail320Url);
+                $("#idResponse").html(item.uuid);
+                $('#popUpDiv').fadeIn("fast", function () {
+                    popUpActive = true;
                 });
+            } else {
+                alert("Nothing found!");
+            }
+            CraftARSDK.getCamera.restartCapture();
+        }
+
+        function didStartCapture() {
+            CraftARCloudRecognition.setCollectionWithToken("08c9ac829f644bcc", function () {
+                CraftARSDK.searchController = CraftARCloudRecognition.searchController;
+
+                CraftARCloudRecognition.onSearchResults(getResults);
+                CraftARCloudRecognition.onSearchError(onError);
+                toggleTabItem("#shutterButton", "show");
+
+            }, function (error) {
+                alert("Error:" + error.errorMessage);
             });
+        }
 
-        </script>
 
-    </head>
-    <body >
-        <div class="bar bar-header bar-light">
-            <h5 class="title" id="headerTitle">Cloud Recognition Example</h5>
+        function startCraftAR() {
+            CraftARSDK.onStartCapture(didStartCapture);
+            CraftARSDK.startCapture();
+        }
+
+        document.addEventListener("deviceready", function () {
+            startCraftAR();
+        }, false);
+
+        function toggleTabItem(name, action) {
+            if (action === "hide") {
+                $(name).css("visibility", "hidden");
+                $(name).removeClass("tab-item");
+                $(name).css("width", "0px");
+            } else {
+                $(name).css("visibility", "visible");
+                $(name).addClass("tab-item");
+                $(name).css("width", "auto");
+            }
+        };
+    </script>
+
+</head>
+
+<body>
+    <div class="bar bar-header bar-light">
+        <h5 class="title" id="headerTitle">Cloud Recognition Example</h5>
+    </div>
+
+    <div class="tabs tabs-icon-only">
+        <a class="tab-item" id="shutterButton" style="visibility:hidden;width:0px;">
+            <img class="icon ion-home" src="img/shutterButton.png" id="mybutton" onclick="singleShotSearch()" alt="" />
+        </a>
+        <div id="loadingGif" style="visibility:hidden;width:0px;">
+            <img src="img/spinner.gif" style="height:80%;" />
         </div>
+    </div>
 
-        <div class="tabs tabs-icon-only" >
-            <a class="tab-item" id="shutterButton" style="visibility:hidden;width:0px;">
-                <img class="icon ion-home" src="img/shutterButton.png"  id="mybutton" onclick="singleShotSearch()" alt="" />
-            </a>
-            <div id="loadingGif" style="visibility:hidden;width:0px;">
-                <img src="img/spinner.gif" style="height:80%;"/>
-            </div>
+    <div id="popUpDiv" style="color:white">
+        <div id="popUpMainDiv">
+            <img src="img/closeButton.png" id="closeButton" onclick="closeClicked();" alt="" style="max-width: 80%; max-height: 80%"
+            />
+            <br><br><br><br><br>
+            <h2 class="text-center">All</h2>
+            <button class="button button-block button-positive" id="switchBtn">TOGGLE</button>
+            <br>
+            <h2 class="text-center">Red</h2>
+            <button class="button button-block button-positive" id="toggleRedBtn">TOGGLE</button>
+            <br>
+            <h2 class="text-center">Green</h2>
+            <button class="button button-block button-positive" id="toggleGreenBtn">TOGGLE</button>
         </div>
+    </div>
+    </div>
+</body>
 
-        <div id="popUpDiv" style="color:white" >
-            <div id="popUpMainDiv">
-                <!--<img src="img/closeButton.png" id="closeButton" onclick=" $('#popUpDiv').fadeOut('slow', function () {
-                            popUpActive = false;
-                        });" alt="" style="max-width: 80%; max-height: 80%"/>
-                <div id="responseDiv">
-                    <div id="imageResponse">
-                        <img src="#" id="image_src" alt=""/>
-                    </div>
-                    <div id="textResponse">
-                        <h1 id="nameResponse"></h1>
-                        <h3 id="idResponse"></h3>
-                    </div>-->
-                    <br><br><br><br><br>
-                    <h2 class="text-center">Switch options</h2>
-                    <button class="button button-block button-positive" id="switchBtn">TURN ON/OFF</button>
-                </div>
-            </div>
-        </div>
-    </body>
 </html>
