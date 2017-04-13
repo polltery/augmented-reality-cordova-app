@@ -1,3 +1,6 @@
+// Set vibration time in ms
+var vibrationTime = 50;
+
 // Form methods : on click of toggle button send a post request
 $(document).on("click", "#switchBtn", function (e) {
 
@@ -12,7 +15,7 @@ $(document).on("click", "#switchBtn", function (e) {
         type: 'GET',
         url: apiUrl + '/toggle',
         success: function (data) {
-            //
+            navigator.vibrate(vibrationTime);
         },
         error: function (jqXHR, exception) {
             var msg = '';
@@ -48,7 +51,7 @@ $(document).on("click", "#toggleRedBtn", function (e) {
         type: 'GET',
         url: apiUrl + '/toggle/led',
         success: function (data) {
-            //
+            navigator.vibrate(vibrationTime);
         },
         error: function (jqXHR, exception) {
             var msg = '';
@@ -84,7 +87,7 @@ $(document).on("click", "#toggleGreenBtn", function (e) {
         type: 'GET',
         url: apiUrl + '/toggle/led2',
         success: function (data) {
-            //
+            navigator.vibrate(vibrationTime);
         },
         error: function (jqXHR, exception) {
             var msg = '';
@@ -119,7 +122,7 @@ $(document).on("change", "#brightnessControl", function (e) {
         type: 'GET',
         url: apiUrl + '/brightness/'+brightnessValue,
         success: function (data) {
-            //
+            navigator.vibrate(vibrationTime);
         },
         error: function (jqXHR, exception) {
             var msg = '';
