@@ -6,6 +6,7 @@ and open the template in the editor.
 /* 
     Created on : 08-mar-2016, 10:25:24
     Author     : Oriol
+    Updated by : Balraj
 */
 
 
@@ -35,14 +36,14 @@ footer {
 
 #popUpDiv {
 
-    width: 80%;
+    width: 75%;
     height: auto;
     background-color: #ECECEC;
     position:fixed; /*it can be fixed too*/
     left:0; right:0;
     top:0; bottom:0;
     margin:auto;
-    position:absolute; height:80%; width:80%;
+    position:absolute; height:50%; width:75%;
     display: none;  
     -webkit-appearance: none;
 }
