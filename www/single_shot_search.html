@@ -38,16 +38,9 @@
             toggleTabItem("#loadingGif", "hide");
             toggleTabItem("#shutterButton", "show");
             if (results.length > 0) {
-                var item = results[0].item;
-                itemHTML = item;
-                $("#nameResponse").html(item.name);
-                $("#image_src").attr("src", results[0].matchedImage.thumbnail320Url);
-                $("#idResponse").html(item.uuid);
-                $('#popUpDiv').fadeIn("fast", function () {
-                    popUpActive = true;
-                });
+                processResults(results);
             } else {
-                alert("Nothing found!");
+                alert("Nothing found");
             }
             CraftARSDK.getCamera.restartCapture();
         }
