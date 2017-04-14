@@ -39,6 +39,7 @@ function processResults(results){
 
     if(ARInterface !== ""){
         $("#popUpDiv").load(ARInterface);
+        ARInterface = "";
     }
 
     // Show UI
